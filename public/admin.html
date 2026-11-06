@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Sign In — Evento</title>
+  <script>
+    (function(){
+      try {
+        var t = localStorage.getItem('evento_theme');
+        if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark';
+        if (t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+      } catch(e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="page-bg"><div class="blob-extra"></div></div>
+
+  <!-- Theme toggle for login screen -->
+  <button class="login-theme-btn theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">◐</button>
+
+  <!-- ── ADMIN LOGIN SCREEN ──────────────────────────────────────── -->
+  <div id="login-wrap" class="admin-login-wrap">
+    <div class="admin-login-box">
+      <div class="admin-login-logo">
+        <div class="admin-login-logo-icon">🎪</div>
+        Evento <span class="admin-badge">Admin</span>
+      </div>
+      <h1 class="admin-login-title">Sign in</h1>
+      <p class="admin-login-sub">Enter administrator credentials to access the management portal.</p>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="admin-user">Username</label>
+          <input class="form-input" id="admin-user" autocomplete="username"
+                 placeholder="admin" required spellcheck="false">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="admin-pass">Password</label>
+          <div style="position:relative">
+            <input class="form-input" id="admin-pass" type="password"
+                   autocomplete="current-password" placeholder="••••••••" required
+                   style="padding-right:44px">
+            <button type="button" id="toggle-pass"
+                    style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                           background:none;border:none;cursor:pointer;color:var(--text-light);
+                           font-size:16px;line-height:1;padding:4px;"
+                    aria-label="Show/hide password" title="Show/hide password">👁</button>
+          </div>
+        </div>
+        <p class="field-error" id="login-error" role="alert" style="margin-bottom:12px;"></p>
+        <button class="btn-submit" type="submit" id="login-btn">Sign in</button>
+      </form>
+      <p style="margin-top:20px;font-size:12px;color:var(--text-light);text-align:center;line-height:1.5;">
+        Default credentials: <strong>admin / admin</strong>
+      </p>
+    </div>
+    <a href="index.html" class="btn-outline" style="margin-top:20px;">
+      ← Back to Evento
+    </a>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/theme.js"></script>
+  <script>
+    // ── Check if already logged in -> redirect straight to dashboard ─
+    const existingToken = sessionStorage.getItem('evento_admin_token');
+    if (existingToken) {
+      fetch('/api/events', { headers: { 'x-admin-token': existingToken } })
+        .then(r => {
+          if (r.ok) {
+            window.location.replace('admin-dashboard.html');
+          } else {
+            sessionStorage.removeItem('evento_admin_token');
+          }
+        })
+        .catch(() => {});
+    }
+
+    // ── Password toggle 
+    document.getElementById('toggle-pass').addEventListener('click', () => {
+      const inp = document.getElementById('admin-pass');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    // ── Login submission -> Redirect to admin-dashboard.html ─────
+    document.getElementById('login-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const errEl = document.getElementById('login-error');
+      errEl.classList.remove('show');
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('admin-user').value.trim(),
+            password: document.getElementById('admin-pass').value,
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(data.error || 'Authentication failed.');
+        }
+
+        sessionStorage.setItem('evento_admin_token', data.token);
+
+        // Success: Redirect away from login page to dashboard
+        btn.innerHTML = '✓ Redirecting…';
+        window.location.href = 'admin-dashboard.html';
+      } catch (err) {
+        errEl.textContent = err.message;
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

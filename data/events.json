@@ -1,0 +1,20 @@
+{
+  "events": [
+    {
+      "id": "custom_1793973674847_1u5kv",
+      "title": "Mumbai event",
+      "category": "Technology",
+      "date": "2026-11-13",
+      "time": "8.00AM",
+      "venue": "the grand banquet",
+      "shortDesc": "no summary",
+      "longDesc": "no descyokm;l[pol",
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+      "organizer": "Reliance",
+      "price": "1599",
+      "emoji": "🚀",
+      "createdAt": "2026-11-06T14:01:14.847Z"
+    }
+  ],
+  "deletedIds": []
+}

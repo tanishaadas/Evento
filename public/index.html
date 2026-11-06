@@ -4,16 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Evento — Discover Events That Matter</title>
+  <script>
+    (function(){try{var t=localStorage.getItem('evento_theme');if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/index.css">
   <style>
     body { background: transparent; overflow-x: hidden; }
   </style>
 </head>
 <body>
 
-<!-- ─── HERO ──────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
   <nav class="landing-nav">
     <div class="landing-logo">
@@ -26,7 +31,11 @@
       <a href="#about">About</a>
     </div>
     <div class="landing-nav-actions">
+      <button class="btn-icon landing-theme-toggle theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
       <a href="registrations.html" class="btn-outline-white">My Tickets</a>
+      <a href="admin.html" class="btn-outline-white">Admin Portal</a>
       <a href="events.html" class="btn-white">Explore →</a>
     </div>
   </nav>
@@ -34,9 +43,6 @@
   <div class="hero-blob"></div>
 
   <div class="hero-content">
-    <div class="hero-eyebrow">
-      <span>✨</span> India's premier event discovery platform
-    </div>
     <h1 class="hero-title">
       Find events<br><em>worth showing up for</em>
     </h1>
@@ -69,7 +75,7 @@
   </div>
 </section>
 
-<!-- ─── FEATURED ───────────────────────────────────────────────── -->
+<!--  FEATURED  -->
 <section class="featured-section" id="featured">
   <div class="page-bg"><div class="blob-extra"></div></div>
   <div class="section-header">
@@ -82,42 +88,46 @@
   <div class="featured-grid" id="featured-grid"></div>
 </section>
 
-<!-- ─── ABOUT ──────────────────────────────────────────────────── -->
-<section id="about" style="background:#1a1240;padding:72px 48px;color:white;text-align:center;">
-  <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:16px;">Why Evento?</h2>
-  <p style="color:rgba(255,255,255,0.65);max-width:520px;margin:0 auto 48px;font-size:16px;line-height:1.7;">
+<!-- ABOUT -->
+<section id="about" class="about-section">
+  <h2 class="about-title">Why Evento?</h2>
+  <p class="about-desc">
     We curate events that are worth your time — no filler, no noise. Just genuinely good experiences across tech, culture, sport, and community.
   </p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;max-width:800px;margin:0 auto;">
-    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
-      <div style="font-size:32px;margin-bottom:12px;">🗂️</div>
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Curated selection</h3>
-      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">Every event is reviewed before it's listed. Quality over quantity.</p>
+  <div class="about-grid">
+    <div class="about-card">
+      <div class="about-card-icon">🗂️</div>
+      <h3>Curated selection</h3>
+      <p>Every event is reviewed before it's listed. Quality over quantity.</p>
     </div>
-    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
-      <div style="font-size:32px;margin-bottom:12px;">📱</div>
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Works everywhere</h3>
-      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">Browse and register on your phone, tablet, or desktop.</p>
+    <div class="about-card">
+      <div class="about-card-icon">📱</div>
+      <h3>Works everywhere</h3>
+      <p>Browse and register on your phone, tablet, or desktop.</p>
     </div>
-    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
-      <div style="font-size:32px;margin-bottom:12px;">🔖</div>
-      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Track your tickets</h3>
-      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">All your registrations in one place, accessible instantly.</p>
+    <div class="about-card">
+      <div class="about-card-icon">🔖</div>
+      <h3>Track your tickets</h3>
+      <p>All your registrations in one place, accessible instantly.</p>
     </div>
   </div>
 </section>
 
 <footer class="landing-footer">
-  Built for the <strong>K Explore Web Designing</strong> assignment · <strong>Evento</strong> © 2025
+  <strong>Evento</strong> By <strong><i>Tanishaa</i></strong>
 </footer>
 
-<!-- ─── TOAST ──────────────────────────────────────────────────── -->
+<!-- TOAST  -->
 <div id="toast" class="toast"></div>
 
+<script src="js/theme.js"></script>
+<script>document.documentElement.setAttribute('data-theme-ready','1');</script>
+<script src="js/notifications.js"></script>
 <script src="js/events-data.js"></script>
 <script>
   // Populate featured grid on landing page
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await window.eventoEventsReady;
     const grid = document.getElementById('featured-grid');
     const featured = EVENTS.filter(e => e.status === 'upcoming').slice(0, 4);
 
@@ -132,7 +142,8 @@
     grid.innerHTML = featured.map(ev => `
       <article class="event-card" onclick="window.location.href='events.html'" style="cursor:pointer">
         <div class="card-banner">
-          ${ev.image ? `<img src="${ev.image}" alt="${ev.title}" loading="lazy">` : ''}
+          ${ev.image ? `<img src="${ev.image}" alt="${ev.title}" loading="lazy" width="600" height="148" style="aspect-ratio:600/148" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : ''}
+          <div class="card-banner-placeholder" style="${ev.image ? 'display:none;' : 'display:flex;'}background:linear-gradient(135deg,#1a1a2e,#3d1c8f);align-items:center;justify-content:center;height:100%;font-size:32px;">${ev.emoji || '📅'}</div>
           <span class="card-status status-${ev.status}">${ev.status.charAt(0).toUpperCase()+ev.status.slice(1)}</span>
         </div>
         <div class="card-body">

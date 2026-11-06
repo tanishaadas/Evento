@@ -1,235 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events — Evento</title>
+  <script>
+    (function () { try { var t = localStorage.getItem('evento_theme'); if (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) t = 'dark'; if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark'); } catch (e) { } })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/events.css">
+  <style>
+    /* Prevent transition flash on first paint */
+    html:not([data-theme-ready]) * {
+      transition: none !important;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- PAGE BACKGROUND -->
-<div class="page-bg"><div class="blob-extra"></div></div>
-
-<!-- MOBILE MENU BTN -->
-<button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-<div class="sidebar-overlay"></div>
-
-<!-- ─── SIDEBAR ───────────────────────────────────────────────── -->
-<aside class="sidebar" role="navigation" aria-label="Main navigation">
-  <div class="sidebar-logo">
-    <div class="logo-icon">🎪</div>
-    <span class="logo-text">Evento</span>
+  <!-- PAGE BACKGROUND -->
+  <div class="page-bg">
+    <div class="blob-extra"></div>
   </div>
 
-  <nav class="sidebar-nav">
-    <a href="index.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Home
-    </a>
-    <a href="events.html" class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Events
-    </a>
-    <a href="registrations.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      My Registrations
-    </a>
+  <!-- MOBILE MENU BTN -->
+  <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </button>
+  <div class="sidebar-overlay"></div>
 
-    <div style="margin:8px 0;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;"></div>
-
-    <div style="padding:8px 14px;font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Categories</div>
-
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Technology')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-      Technology
-    </a>
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Music')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      Music
-    </a>
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Business')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-      Business
-    </a>
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Sports')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-      Sports
-    </a>
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Arts')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>
-      Arts
-    </a>
-    <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Workshop')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      Workshops
-    </a>
-  </nav>
-
-  <div class="sidebar-footer">
-    <a href="index.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      About Evento
-    </a>
-  </div>
-</aside>
-
-<!-- ─── MAIN ───────────────────────────────────────────────────── -->
-<main class="main">
-
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <h1 class="topbar-title">Events</h1>
-    <div class="topbar-actions">
-      <div class="search-bar" role="search">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="search" id="search-input" placeholder="Search events, venues…" aria-label="Search events">
-      </div>
-      <button class="btn-icon" title="Notifications" aria-label="Notifications">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      </button>
-      <div class="avatar" title="Profile" aria-label="User profile">P</div>
-      <button class="btn-primary" onclick="openRegForm(null)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Register
-      </button>
-    </div>
-  </header>
-
-  <!-- FILTER ROW -->
-  <div class="filter-row">
-    <div class="tab-group" role="tablist">
-      <button class="tab-btn active" data-tab="all" role="tab" aria-selected="true">All</button>
-      <button class="tab-btn" data-tab="upcoming" role="tab">Upcoming</button>
-      <button class="tab-btn" data-tab="ongoing" role="tab">Ongoing</button>
-      <button class="tab-btn" data-tab="past" role="tab">Past</button>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🎪</div>
+      <span class="logo-text">Evento</span>
     </div>
 
-    <div style="display:flex;gap:8px;align-items:center;">
-      <select class="category-select" id="category-select" aria-label="Filter by category">
-        <option value="All">All categories</option>
-        <option value="Technology">Technology</option>
-        <option value="Music">Music</option>
-        <option value="Business">Business</option>
-        <option value="Sports">Sports</option>
-        <option value="Arts">Arts</option>
-        <option value="Workshop">Workshop</option>
-        <option value="Community">Community</option>
-      </select>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        Home
+      </a>
+      <a href="events.html" class="nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+        Events
+      </a>
+      <a href="registrations.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        My Registrations
+      </a>
+      <a href="notifications.html" class="nav-item">🔔 Notifications</a>
 
-      <div class="view-toggle" role="group" aria-label="View mode">
-        <button class="view-btn active" data-view="grid" title="Grid view" aria-label="Grid view">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <div style="margin:8px 0;border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;"></div>
+
+      <div
+        style="padding:8px 14px;font-size:11px;color:rgba(255,255,255,0.35);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">
+        Categories</div>
+
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Technology')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" />
+          <line x1="8" y1="21" x2="16" y2="21" />
+          <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+        Technology
+      </a>
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Music')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+        </svg>
+        Music
+      </a>
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Business')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" />
+          <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+        </svg>
+        Business
+      </a>
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Sports')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+          <line x1="2" y1="12" x2="22" y2="12" />
+        </svg>
+        Sports
+      </a>
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Arts')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <path
+            d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32" />
+        </svg>
+        Arts
+      </a>
+      <a href="#" class="nav-item" onclick="filterCategoryFromSidebar('Workshop')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+        Workshops
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item theme-toggle-btn"
+        style="width:100%;text-align:left;background:none;border:none;cursor:pointer;"
+        aria-label="Toggle dark/light mode">
+        <span class="theme-toggle-icon" style="display:flex;align-items:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </span>
+        <span class="theme-toggle-label">Dark mode</span>
+      </button>
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        About Evento
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN  -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <h1 class="topbar-title">Events</h1>
+      <div class="topbar-actions">
+        <div class="search-bar" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input type="search" id="search-input" placeholder="Search events, venues…" aria-label="Search events">
+        </div>
+        <button class="btn-icon theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
         </button>
-        <button class="view-btn" data-view="list" title="List view" aria-label="List view">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <a href="notifications.html" class="btn-icon" title="Notifications" aria-label="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 01-3.46 0" />
+          </svg>
+        </a>
+        <div class="avatar" title="Profile" aria-label="User profile">TD</div>
+        <button class="btn-primary" onclick="openRegForm(null)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Register
         </button>
       </div>
-    </div>
-  </div>
+    </header>
 
-  <!-- COUNT -->
-  <p class="events-count" id="events-count" aria-live="polite"></p>
-
-  <!-- EVENTS GRID -->
-  <section class="events-grid" id="events-grid" aria-label="Events list"></section>
-
-</main>
-
-<!-- ─── DETAIL PANEL ───────────────────────────────────────────── -->
-<div class="page-overlay" id="detail-overlay" role="dialog" aria-modal="true" aria-label="Event details">
-  <div class="detail-panel">
-    <div class="detail-banner">
-      <div id="detail-banner-img"></div>
-      <button class="detail-close" onclick="closeDetail()" aria-label="Close details">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="detail-body" id="detail-body"></div>
-    <div class="detail-actions">
-      <button class="btn-register" id="detail-register-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        Register for this event
-      </button>
-      <button class="btn-share" onclick="navigator.share ? navigator.share({title:document.querySelector('.detail-title')?.textContent,url:window.location.href}) : showToast('Link copied!')" aria-label="Share event">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- ─── REGISTRATION OVERLAY ───────────────────────────────────── -->
-<div class="page-overlay" id="reg-overlay" role="dialog" aria-modal="true" aria-label="Register for event">
-  <div class="reg-panel">
-    <div class="reg-header">
-      <button onclick="closeRegForm()" aria-label="Go back">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      </button>
-      <h2>Register for event</h2>
-    </div>
-
-    <form class="reg-form" id="reg-form" novalidate>
-      <div class="selected-event-info" id="selected-event-info"></div>
-
-      <div class="form-group">
-        <label class="form-label" for="reg-name">Full name <span>*</span></label>
-        <input type="text" id="reg-name" class="form-input" placeholder="Your full name" autocomplete="name">
-        <span class="field-error" id="reg-name-error"></span>
+    <!-- FILTER ROW -->
+    <div class="filter-row">
+      <div class="tab-group" role="tablist">
+        <button class="tab-btn active" data-tab="all" role="tab" aria-selected="true">All</button>
+        <button class="tab-btn" data-tab="upcoming" role="tab">Upcoming</button>
+        <button class="tab-btn" data-tab="ongoing" role="tab">Ongoing</button>
+        <button class="tab-btn" data-tab="past" role="tab">Past</button>
       </div>
 
-      <div class="form-group">
-        <label class="form-label" for="reg-email">Email address <span>*</span></label>
-        <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" autocomplete="email">
-        <span class="field-error" id="reg-email-error"></span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="reg-phone">Phone number <span>*</span></label>
-        <input type="tel" id="reg-phone" class="form-input" placeholder="10-digit mobile number" autocomplete="tel" maxlength="10">
-        <span class="field-error" id="reg-phone-error"></span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="reg-event">Select event <span>*</span></label>
-        <select class="form-select" id="reg-event">
-          <option value="">Choose an event</option>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select class="category-select" id="category-select" aria-label="Filter by category">
+          <option value="All">All categories</option>
+          <option value="Technology">Technology</option>
+          <option value="Music">Music</option>
+          <option value="Business">Business</option>
+          <option value="Sports">Sports</option>
+          <option value="Arts">Arts</option>
+          <option value="Workshop">Workshop</option>
+          <option value="Community">Community</option>
         </select>
-        <span class="field-error" id="reg-event-error"></span>
+
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <button class="view-btn active" data-view="grid" title="Grid view" aria-label="Grid view">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+          </button>
+          <button class="view-btn" data-view="list" title="List view" aria-label="List view">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNT -->
+    <p class="events-count" id="events-count" aria-live="polite"></p>
+
+    <!-- EVENTS GRID -->
+    <section class="events-grid" id="events-grid" aria-label="Events list"></section>
+
+  </main>
+
+  <!-- DETAIL PANEL  -->
+  <div class="page-overlay" id="detail-overlay" role="dialog" aria-modal="true" aria-labelledby="detail-dialog-title"
+    aria-describedby="detail-dialog-desc">
+    <div class="detail-panel">
+      <div class="detail-banner">
+        <div id="detail-banner-img"></div>
+        <button class="detail-close" onclick="closeDetail()" aria-label="Close details">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="detail-body" id="detail-body"></div>
+      <div class="detail-actions">
+        <button class="btn-register" id="detail-register-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+          </svg>
+          Register for this event
+        </button>
+        <button class="btn-share" id="detail-share-btn" aria-label="Share event">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRATION OVERLAY -->
+  <div class="page-overlay" id="reg-overlay" role="dialog" aria-modal="true" aria-labelledby="reg-dialog-title">
+    <div class="reg-panel">
+      <div class="reg-header">
+        <button onclick="closeRegForm()" aria-label="Go back">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+        </button>
+        <h2 id="reg-dialog-title">Register for event</h2>
       </div>
 
-      <button type="submit" class="btn-submit">Confirm registration</button>
-    </form>
+      <form class="reg-form" id="reg-form" novalidate>
+        <div class="selected-event-info" id="selected-event-info"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full name <span>*</span></label>
+          <input type="text" id="reg-name" class="form-input" placeholder="Your full name" autocomplete="name">
+          <span class="field-error" id="reg-name-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email address <span>*</span></label>
+          <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" autocomplete="email">
+          <span class="field-error" id="reg-email-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-phone">Phone number <span>*</span></label>
+          <input type="tel" id="reg-phone" class="form-input" placeholder="10-digit mobile number" autocomplete="tel"
+            maxlength="10">
+          <span class="field-error" id="reg-phone-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reg-event">Select event <span>*</span></label>
+          <select class="form-select" id="reg-event">
+            <option value="">Choose an event</option>
+          </select>
+          <span class="field-error" id="reg-event-error"></span>
+        </div>
+
+        <button type="submit" class="btn-submit">Confirm registration</button>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div id="toast" class="toast"></div>
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
 
-<script src="js/events-data.js"></script>
-<script>
-  // Populate event select
-  document.addEventListener('DOMContentLoaded', () => {
-    const sel = document.getElementById('reg-event');
-    EVENTS.forEach(ev => {
-      const opt = document.createElement('option');
-      opt.value = ev.id;
-      opt.textContent = ev.title;
-      sel.appendChild(opt);
-    });
-  });
-
-  function filterCategoryFromSidebar(cat) {
-    const sel = document.getElementById('category-select');
-    if (sel) { sel.value = cat; sel.dispatchEvent(new Event('change')); }
-    // Close mobile sidebar if open
-    document.querySelector('.sidebar')?.classList.remove('open');
-    document.querySelector('.sidebar-overlay')?.classList.remove('open');
-  }
-</script>
-<script src="js/app.js"></script>
+  <script src="js/theme.js"></script>
+  <script>document.documentElement.setAttribute('data-theme-ready', '1');</script>
+  <script src="js/notifications.js"></script>
+  <script src="js/events-data.js"></script>
+  <script>
+    function filterCategoryFromSidebar(cat) {
+      const sel = document.getElementById('category-select');
+      if (sel) { sel.value = cat; sel.dispatchEvent(new Event('change')); }
+      // Close mobile sidebar if open
+      document.querySelector('.sidebar')?.classList.remove('open');
+      document.querySelector('.sidebar-overlay')?.classList.remove('open');
+    }
+  </script>
+  <script src="js/app.js"></script>
 </body>
+
 </html>

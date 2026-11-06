@@ -8,7 +8,46 @@ let state = {
   registrationEvent: null,
 };
 
+let _detailOpener = null;
+let _regOpener = null;
+
+// ─── SAFE LOCALSTORAGE HELPERS ────────────────────────────────────────────────
+function readRegistrations() {
+  try {
+    const raw = localStorage.getItem('evento_registrations');
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(r => r && typeof r === 'object' && r.id && r.eventId);
+  } catch (e) {
+    console.warn('Evento: localStorage read error', e);
+    return [];
+  }
+}
+
+function writeRegistrations(regs) {
+  try {
+    localStorage.setItem('evento_registrations', JSON.stringify(regs));
+    return true;
+  } catch (e) {
+    console.warn('Evento: localStorage write error', e);
+    showToast('⚠️ Could not save registration. Storage may be full.');
+    return false;
+  }
+}
+
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+// SEC-2: HTML-escape untrusted strings before inserting into innerHTML
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function categoryTagClass(cat) {
   const map = {
     Technology: 'tag-tech', Music: 'tag-music', Business: 'tag-business',
@@ -55,7 +94,7 @@ function buildCard(ev) {
   const bg = bgColors[ev.category] || 'linear-gradient(135deg,#1a1a2e,#3d1c8f)';
 
   return `
-    <article class="event-card" onclick="openDetail(${ev.id})" tabindex="0" role="button" aria-label="View details for ${ev.title}">
+    <article class="event-card" onclick="openDetail('${ev.id}')" tabindex="0" role="button" aria-label="View details for ${ev.title}">
       <div class="card-banner">
         ${imgHtml}
         <div class="card-banner-placeholder" style="${placeholderStyle}background:${bg}">${ev.emoji}</div>
@@ -81,7 +120,7 @@ function buildCard(ev) {
       </div>
       <div class="card-footer">
         <span class="card-price">${ev.price}</span>
-        <button class="btn-card" onclick="event.stopPropagation();openRegForm(${ev.id})">Register</button>
+        <button class="btn-card" onclick="event.stopPropagation();openRegForm('${ev.id}')">Register</button>
       </div>
     </article>`;
 }
@@ -113,7 +152,7 @@ function renderEvents() {
 
 // ─── DETAIL PANEL ─────────────────────────────────────────────────────────────
 function openDetail(id) {
-  const ev = EVENTS.find(e => e.id === id);
+  const ev = EVENTS.find(e => String(e.id) === String(id));
   if (!ev) return;
   state.selectedEvent = ev;
 
@@ -121,8 +160,8 @@ function openDetail(id) {
   const body = document.getElementById('detail-body');
 
   const imgHtml = ev.image
-    ? `<img src="${ev.image}" alt="${ev.title}">`
-    : `<div class="detail-banner-placeholder" style="background:linear-gradient(135deg,#2a0d7a,#5b2fd4)">${ev.emoji}</div>`;
+    ? `<img src="${ev.image}" alt="${ev.title}" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\\'detail-banner-placeholder\\\' style=\\\'background:linear-gradient(135deg,#2a0d7a,#5b2fd4)\\\'>${ev.emoji || '📅'}</div>';">`
+    : `<div class="detail-banner-placeholder" style="background:linear-gradient(135deg,#2a0d7a,#5b2fd4)">${ev.emoji || '📅'}</div>`;
 
   document.getElementById('detail-banner-img').innerHTML = imgHtml;
   body.innerHTML = `
@@ -156,56 +195,108 @@ function openDetail(id) {
       <p>${ev.longDesc}</p>
     </div>`;
 
+  _detailOpener = document.activeElement;
   panel.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    const closeBtn = panel.querySelector('.detail-close');
+    if (closeBtn) closeBtn.focus();
+  }, 50);
+
   document.getElementById('detail-register-btn').onclick = () => {
     closeDetail();
     openRegForm(ev.id);
   };
+
+  const shareBtn = document.getElementById('detail-share-btn');
+  if (shareBtn) {
+    shareBtn.onclick = async () => {
+      const title = ev.title;
+      const url = window.location.href;
+      if (navigator.share) {
+        try { await navigator.share({ title, url }); } catch (_) {}
+      } else if (navigator.clipboard) {
+        try {
+          await navigator.clipboard.writeText(url);
+          showToast('🔗 Link copied to clipboard!');
+        } catch (_) {
+          showToast('📋 Copy this link: ' + url);
+        }
+      } else {
+        showToast('📋 Copy this link: ' + url);
+      }
+    };
+  }
 }
 
 function closeDetail() {
   document.getElementById('detail-overlay').classList.remove('open');
   document.body.style.overflow = '';
   state.selectedEvent = null;
+  if (_detailOpener) { _detailOpener.focus(); _detailOpener = null; }
 }
 
 // ─── REGISTRATION FORM ────────────────────────────────────────────────────────
+function populateRegEventSelect(selectedId) {
+  const select = document.getElementById('reg-event');
+  if (!select) return;
+  const currentVal = selectedId ? String(selectedId) : select.value;
+  select.innerHTML = '<option value="">Choose an event</option>';
+  EVENTS.forEach(ev => {
+    const opt = document.createElement('option');
+    opt.value = String(ev.id);
+    opt.textContent = `${ev.emoji || '📅'} ${ev.title}`;
+    if (currentVal && String(ev.id) === String(currentVal)) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  });
+  if (currentVal) {
+    select.value = String(currentVal);
+  }
+}
+
 function openRegForm(id) {
-  const ev = id ? EVENTS.find(e => e.id === id) : null;
+  const ev = id ? EVENTS.find(e => String(e.id) === String(id)) : null;
   state.registrationEvent = ev || null;
 
   const overlay = document.getElementById('reg-overlay');
   const eventInfo = document.getElementById('selected-event-info');
   const eventSelect = document.getElementById('reg-event');
 
-  if (ev && eventInfo) {
-    eventInfo.textContent = `📅 Registering for: ${ev.title}`;
-    eventInfo.classList.add('show');
+  clearFormErrors();
+  const form = document.getElementById('reg-form');
+  if (form) form.reset();
+
+  // Always populate so all shared/admin events are listed
+  populateRegEventSelect(ev ? ev.id : null);
+
+  if (ev) {
+    if (eventSelect) eventSelect.value = String(ev.id);
+    if (eventInfo) {
+      eventInfo.textContent = `📅 Registering for: ${ev.title}`;
+      eventInfo.classList.add('show');
+    }
   } else if (eventInfo) {
     eventInfo.classList.remove('show');
   }
 
-  if (eventSelect) {
-    eventSelect.value = ev ? String(ev.id) : '';
-  }
-
-  clearFormErrors();
-  document.getElementById('reg-form').reset();
-  if (ev && eventSelect) eventSelect.value = String(ev.id);
-  if (ev && eventInfo) {
-    eventInfo.textContent = `📅 Registering for: ${ev.title}`;
-    eventInfo.classList.add('show');
-  }
-
+  _regOpener = document.activeElement;
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  setTimeout(() => {
+    const nameInput = document.getElementById('reg-name');
+    if (nameInput) nameInput.focus();
+  }, 50);
 }
 
 function closeRegForm() {
   document.getElementById('reg-overlay').classList.remove('open');
   document.body.style.overflow = '';
   state.registrationEvent = null;
+  if (_regOpener) { _regOpener.focus(); _regOpener = null; }
 }
 
 // ─── FORM VALIDATION ──────────────────────────────────────────────────────────
@@ -248,24 +339,43 @@ function handleRegSubmit(e) {
 
   if (!valid) return;
 
-  const ev = EVENTS.find(e => e.id === parseInt(evId));
+  const ev = EVENTS.find(e => String(e.id) === String(evId));
   const reg = {
-    id: 'reg_' + Date.now(),
-    name, email, phone,
-    eventId: parseInt(evId),
+    id: 'reg_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), // SEC-5: prevent ID collision
+    name, email, phone: phone.replace(/\s/g, ''), // SEC-4: store sanitised phone
+    eventId: evId,
     eventTitle: ev ? ev.title : 'Unknown Event',
     eventDate: ev ? ev.date : '',
     eventEmoji: ev ? ev.emoji : '📅',
     registeredAt: new Date().toISOString()
   };
 
+  // SEC-6: prevent double-submit by disabling button during processing
+  const submitBtn = e.target.querySelector('[type="submit"]');
+  if (submitBtn) submitBtn.disabled = true;
+
+  // Check for duplicate registration
+  const existing = readRegistrations();
+  const isDuplicate = existing.some(r => String(r.eventId) === String(evId) && r.email.toLowerCase() === email.toLowerCase());
+  if (isDuplicate) {
+    showFieldError('reg-email', 'You have already registered for this event with this email.');
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
   // Save to localStorage
-  const existing = JSON.parse(localStorage.getItem('evento_registrations') || '[]');
   existing.push(reg);
-  localStorage.setItem('evento_registrations', JSON.stringify(existing));
+  if (!writeRegistrations(existing)) {
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
+
+  if (submitBtn) submitBtn.disabled = false;
 
   closeRegForm();
   showToast(`✅ You're registered for ${ev ? ev.title : 'the event'}!`);
+  if (typeof addEventoNotification === 'function') {
+    addEventoNotification('registration', `You just registered for ${ev ? ev.title : 'the event'}.`, evId);
+  }
 
   // Refresh my-registrations page if visible
   if (typeof renderMyRegistrations === 'function') renderMyRegistrations();
@@ -353,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const evSelect = document.getElementById('reg-event');
   if (evSelect) {
     evSelect.addEventListener('change', e => {
-      const ev = EVENTS.find(ev => ev.id === parseInt(e.target.value));
+      const ev = EVENTS.find(ev => String(ev.id) === String(e.target.value));
       const info = document.getElementById('selected-event-info');
       if (info) {
         if (ev) {
@@ -387,6 +497,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Initial render
-  renderEvents();
+  // Wait for shared events so admin additions are visible to every visitor.
+  const ready = window.eventoEventsReady || Promise.resolve(EVENTS);
+  ready.then(() => {
+    populateRegEventSelect();
+    renderEvents();
+  });
 });

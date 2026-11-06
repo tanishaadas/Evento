@@ -2,7 +2,7 @@ function renderMyRegistrations() {
   const list = document.getElementById('reg-list');
   if (!list) return;
 
-  const regs = JSON.parse(localStorage.getItem('evento_registrations') || '[]');
+  const regs = readRegistrations();
 
   if (regs.length === 0) {
     list.innerHTML = `
@@ -16,27 +16,37 @@ function renderMyRegistrations() {
   }
 
   list.innerHTML = regs.slice().reverse().map(reg => {
-    const ev = EVENTS.find(e => e.id === reg.eventId);
-    const dateStr = ev ? new Date(ev.date).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric'}) : '';
+    const ev = EVENTS.find(e => String(e.id) === String(reg.eventId));
+    const eventDate = (ev && ev.date) || reg.eventDate;
+    const dateStr = eventDate ? new Date(eventDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric'}) : '';
+    // SEC-2: escape user-supplied strings before inserting into innerHTML
+    const safeTitle = escHtml(reg.eventTitle || (ev && ev.title) || 'Event');
+    const safeName  = escHtml(reg.name || '');
+    const safeEmail = escHtml(reg.email || '');
+    const safeId    = escHtml(reg.id || '');
     return `
-      <div class="reg-item" id="reg-${reg.id}">
-        <div class="reg-item-icon">${reg.eventEmoji || '📅'}</div>
+      <div class="reg-item" id="reg-${safeId}">
+        <div class="reg-item-icon">${reg.eventEmoji || (ev && ev.emoji) || '📅'}</div>
         <div class="reg-item-info">
-          <div class="reg-item-title">${reg.eventTitle}</div>
-          <div class="reg-item-meta">${dateStr ? dateStr + ' · ' : ''}Registered as ${reg.name} · ${reg.email}</div>
+          <div class="reg-item-title">${safeTitle}</div>
+          <div class="reg-item-meta">${dateStr ? dateStr + ' · ' : ''}Registered as ${safeName} · ${safeEmail}</div>
         </div>
-        <button class="btn-cancel" onclick="cancelRegistration('${reg.id}')">Cancel</button>
+        <button class="btn-cancel" onclick="cancelRegistration('${safeId}')">Cancel</button>
       </div>`;
   }).join('');
 }
 
 function cancelRegistration(id) {
   if (!confirm('Cancel this registration?')) return;
-  const regs = JSON.parse(localStorage.getItem('evento_registrations') || '[]');
+  const regs = readRegistrations();
   const updated = regs.filter(r => r.id !== id);
-  localStorage.setItem('evento_registrations', JSON.stringify(updated));
+  writeRegistrations(updated);
   renderMyRegistrations();
   showToast('Registration cancelled.');
 }
 
-document.addEventListener('DOMContentLoaded', renderMyRegistrations);
+document.addEventListener('DOMContentLoaded', () => {
+  renderMyRegistrations();
+  const ready = window.eventoEventsReady || Promise.resolve(EVENTS);
+  ready.then(renderMyRegistrations);
+});

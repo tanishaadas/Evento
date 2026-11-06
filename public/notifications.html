@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — Evento</title>
+  <script>
+    (function(){try{var t=localStorage.getItem('evento_theme');if(!t&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/notifications.css">
+</head>
+<body>
+  <div class="page-bg"><div class="blob-extra"></div></div>
+  <main class="notifications-shell">
+    <header class="topbar" style="padding-left:0;padding-right:0;">
+      <div>
+        <h1 class="topbar-title">Notifications</h1>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:2px">Updates on registrations and new events</p>
+      </div>
+      <div class="topbar-actions">
+        <a href="index.html" class="btn-outline">Home</a>
+        <button class="btn-icon theme-toggle-btn" aria-label="Toggle dark/light mode" title="Toggle dark/light mode">◐</button>
+        <a href="events.html" class="btn-primary">Browse events</a>
+      </div>
+    </header>
+    <section class="notification-list" id="notification-list"></section>
+  </main>
+  <div id="toast" class="toast"></div>
+  <script src="js/theme.js"></script>
+  <script src="js/notifications.js"></script>
+  <script>
+    const list = document.getElementById('notification-list');
+    const notifications = readEventoNotifications().slice().reverse();
+    list.innerHTML = notifications.length ? notifications.map(item => `
+      <article class="notification-item${item.read ? '' : ' unread'}">
+        <div class="notification-icon">${item.type === 'registration' ? '✅' : '🎉'}</div>
+        <div class="notification-content">
+          <strong>${escHtml(item.message)}</strong>
+          <small>${new Date(item.createdAt).toLocaleString('en-IN')}</small>
+        </div>
+      </article>`).join('') : '<div class="empty-state"><div class="empty-icon">🔔</div><h3>No notifications yet</h3><p>Your registrations and new event alerts will appear here.</p></div>';
+    markEventoNotificationsRead();
+    function escHtml(value) {
+      return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

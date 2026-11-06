@@ -1,0 +1,171 @@
+/* ─── EVENTO NOTIFICATIONS PAGE STYLES (SOLVES PROBLEM 4 & 5) ─ */
+
+.notifications-shell {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 32px 48px;
+  box-sizing: border-box;
+}
+
+.notifications-header {
+  margin-bottom: 24px;
+}
+
+.notifications-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Captures full container width on laptops and desktops */
+.notification-list {
+  width: 100%;
+  margin: 0 0 24px 0;
+  padding: 8px 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Individual notification row capturing 100% width */
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item.unread {
+  background: var(--purple-soft);
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 10px;
+  border-bottom-color: transparent;
+}
+
+[data-theme="dark"] .notification-item.unread {
+  background: #251d4d;
+  border: 1px solid #5b2fd4;
+}
+
+.notification-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--purple-soft);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .notification-icon {
+  background: #231b46;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.notification-content strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.notification-content small {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.notification-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--purple-mid);
+  flex-shrink: 0;
+}
+
+/* ─── EMPTY STATE ────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state .empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  font-size: 14px;
+}
+
+/* ─── RESPONSIVE: NOTIFICATIONS ──────────────────────────────── */
+@media (max-width: 1024px) {
+  .notifications-shell {
+    padding: 0 24px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .notifications-shell {
+    padding: 0 16px 36px;
+  }
+  .notification-list {
+    padding: 6px 16px;
+  }
+  .notification-item.unread {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-item {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+  }
+  .notification-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  .notification-content strong {
+    font-size: 14px;
+  }
+}
+
