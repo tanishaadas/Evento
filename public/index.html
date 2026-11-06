@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evento — Discover Events That Matter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: transparent; overflow-x: hidden; }
+  </style>
+</head>
+<body>
+
+<!-- ─── HERO ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <nav class="landing-nav">
+    <div class="landing-logo">
+      <div class="landing-logo-icon">🎪</div>
+      Evento
+    </div>
+    <div class="landing-nav-links">
+      <a href="events.html">Browse Events</a>
+      <a href="registrations.html">My Registrations</a>
+      <a href="#about">About</a>
+    </div>
+    <div class="landing-nav-actions">
+      <a href="registrations.html" class="btn-outline-white">My Tickets</a>
+      <a href="events.html" class="btn-white">Explore →</a>
+    </div>
+  </nav>
+
+  <div class="hero-blob"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span>✨</span> India's premier event discovery platform
+    </div>
+    <h1 class="hero-title">
+      Find events<br><em>worth showing up for</em>
+    </h1>
+    <p class="hero-sub">
+      From underground jazz nights and startup summits to weekend treks and design conferences — Evento puts the best of India's live experiences in one place.
+    </p>
+    <div class="hero-actions">
+      <a href="events.html" class="btn-hero-primary">
+        Browse all events
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#featured" class="btn-hero-ghost">
+        See what's on
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">120+</div>
+        <div class="stat-label">Events monthly</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">40k</div>
+        <div class="stat-label">Attendees</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">18</div>
+        <div class="stat-label">Cities</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURED ───────────────────────────────────────────────── -->
+<section class="featured-section" id="featured">
+  <div class="page-bg"><div class="blob-extra"></div></div>
+  <div class="section-header">
+    <h2 class="section-title">Upcoming this <span>month</span></h2>
+    <a href="events.html" class="section-link">
+      View all events
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="featured-grid" id="featured-grid"></div>
+</section>
+
+<!-- ─── ABOUT ──────────────────────────────────────────────────── -->
+<section id="about" style="background:#1a1240;padding:72px 48px;color:white;text-align:center;">
+  <h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;margin-bottom:16px;">Why Evento?</h2>
+  <p style="color:rgba(255,255,255,0.65);max-width:520px;margin:0 auto 48px;font-size:16px;line-height:1.7;">
+    We curate events that are worth your time — no filler, no noise. Just genuinely good experiences across tech, culture, sport, and community.
+  </p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;max-width:800px;margin:0 auto;">
+    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
+      <div style="font-size:32px;margin-bottom:12px;">🗂️</div>
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Curated selection</h3>
+      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">Every event is reviewed before it's listed. Quality over quantity.</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
+      <div style="font-size:32px;margin-bottom:12px;">📱</div>
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Works everywhere</h3>
+      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">Browse and register on your phone, tablet, or desktop.</p>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);border-radius:16px;padding:28px 20px;">
+      <div style="font-size:32px;margin-bottom:12px;">🔖</div>
+      <h3 style="font-size:16px;font-weight:600;margin-bottom:8px;">Track your tickets</h3>
+      <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.6;">All your registrations in one place, accessible instantly.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="landing-footer">
+  Built for the <strong>K Explore Web Designing</strong> assignment · <strong>Evento</strong> © 2025
+</footer>
+
+<!-- ─── TOAST ──────────────────────────────────────────────────── -->
+<div id="toast" class="toast"></div>
+
+<script src="js/events-data.js"></script>
+<script>
+  // Populate featured grid on landing page
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('featured-grid');
+    const featured = EVENTS.filter(e => e.status === 'upcoming').slice(0, 4);
+
+    function categoryTagClass(cat) {
+      const map = { Technology:'tag-tech', Music:'tag-music', Business:'tag-business', Sports:'tag-sports', Arts:'tag-arts', Workshop:'tag-workshop', Community:'tag-community' };
+      return map[cat] || 'tag-tech';
+    }
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'});
+    }
+
+    grid.innerHTML = featured.map(ev => `
+      <article class="event-card" onclick="window.location.href='events.html'" style="cursor:pointer">
+        <div class="card-banner">
+          ${ev.image ? `<img src="${ev.image}" alt="${ev.title}" loading="lazy">` : ''}
+          <span class="card-status status-${ev.status}">${ev.status.charAt(0).toUpperCase()+ev.status.slice(1)}</span>
+        </div>
+        <div class="card-body">
+          <div class="card-category"><span class="tag ${categoryTagClass(ev.category)}">${ev.category}</span></div>
+          <h3 class="card-title">${ev.title}</h3>
+          <div class="card-meta">
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              ${formatDate(ev.date)}
+            </div>
+            <div class="meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${ev.venue.split(',')[0]}
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="card-price">${ev.price}</span>
+          <span class="btn-card">View →</span>
+        </div>
+      </article>`).join('');
+  });
+</script>
+</body>
+</html>
